@@ -4,73 +4,89 @@ import {
   createArticle,
   patchArticle,
   deleteArticle,
-} from "./ArticleService.js";
+} from './api/ArticleService.js';
 import {
   getProductList,
   getProduct,
   createProduct,
   patchProduct,
   deleteProduct,
-} from "./ProductService.js";
+} from './api/ProductService.js';
 
-// Article API 관련 코드들
+// ===== Article API 테스트 =====
 async function testArticle() {
-  console.log("===== Article API =====");
+  console.log('===== Article API =====');
 
-  const articleList = await getArticleList(1, 5, "판다");
-  console.log("게시글 목록:", articleList);
+  try {
+    const articleList = await getArticleList({ page: 1, pageSize: 5, keyword: '판다' });
+    console.log('게시글 목록:', articleList);
 
-  const newArticle = await createArticle(
-    "스프린트 미션 3 테스트 글",
-    "fetch와 .then()으로 작성한 게시글입니다.",
-    "https://example.com/article.png"
-  );
-  console.log("게시글 등록:", newArticle);
-  if (!newArticle) return;
+    const newArticle = await createArticle({
+      title: '스프린트 미션 3 테스트 글',
+      content: 'fetch와 .then()으로 작성한 게시글입니다.',
+      image: 'https://example.com/article.png',
+    });
+    console.log('게시글 등록:', newArticle);
 
-  const article = await getArticle(newArticle.id);
-  console.log("게시글 상세:", article);
+    const article = await getArticle(newArticle.id);
+    console.log('게시글 상세:', article);
 
-  const patchedArticle = await patchArticle(newArticle.id, {
-    title: "수정된 테스트 글",
-  });
-  console.log("게시글 수정:", patchedArticle);
+    const patchedArticle = await patchArticle(newArticle.id, {
+      title: '수정된 테스트 글',
+    });
+    console.log('게시글 수정:', patchedArticle);
 
-  const deletedArticle = await deleteArticle(newArticle.id);
-  console.log("게시글 삭제:", deletedArticle);
+    const deletedArticle = await deleteArticle(newArticle.id);
+    console.log('게시글 삭제:', deletedArticle);
+  } catch (error) {
+    console.log('Article 테스트 중단:', error.message);
+    return;
+  }
 
-  // 없는 게시글을 조회해서 에러 메시지가 콘솔에 찍히는지 확인해보기.
-  await getArticle(999999999);
+  // 없는 게시글을 조회해서 에러가 호출한 쪽까지 전달되는지 확인
+  try {
+    await getArticle(999999999);
+  } catch (error) {
+    console.log('실패 케이스 확인 (상태 코드):', error.status);
+  }
 }
 
-// Product API 관련 코드들.
+// ===== Product API 테스트 =====
 async function testProduct() {
-  console.log("===== Product API =====");
+  console.log('===== Product API =====');
 
-  const productList = await getProductList(1, 5, "아이패드");
-  console.log("상품 목록:", productList);
+  try {
+    const productList = await getProductList({ page: 1, pageSize: 5, keyword: '아이패드' });
+    console.log('상품 목록:', productList);
 
-  const newProduct = await createProduct(
-    "테스트 상품",
-    "스프린트 미션 3에서 등록한 상품입니다.",
-    10000,
-    ["테스트", "미션3"],
-    ["https://example.com/product.png"]
-  );
-  console.log("상품 등록:", newProduct);
-  if (!newProduct) return;
+    const newProduct = await createProduct({
+      name: '테스트 상품',
+      description: '스프린트 미션 3에서 등록한 상품입니다.',
+      price: 10000,
+      tags: ['테스트', '미션3'],
+      images: ['https://example.com/product.png'],
+    });
+    console.log('상품 등록:', newProduct);
 
-  const product = await getProduct(newProduct.id);
-  console.log("상품 상세:", product);
+    const product = await getProduct(newProduct.id);
+    console.log('상품 상세:', product);
 
-  const patchedProduct = await patchProduct(newProduct.id, { price: 20000 });
-  console.log("상품 수정:", patchedProduct);
+    const patchedProduct = await patchProduct(newProduct.id, { price: 20000 });
+    console.log('상품 수정:', patchedProduct);
 
-  const deletedProduct = await deleteProduct(newProduct.id);
-  console.log("상품 삭제:", deletedProduct);
+    const deletedProduct = await deleteProduct(newProduct.id);
+    console.log('상품 삭제:', deletedProduct);
+  } catch (error) {
+    console.log('Product 테스트 중단:', error.message);
+    return;
+  }
 
-  // 없는 상품을 조회해서 에러 메시지가 콘솔에 찍히는지 확인해보기
-  await getProduct(999999999);
+  // 없는 상품을 조회해서 에러가 호출한 쪽까지 전달되는지 확인
+  try {
+    await getProduct(999999999);
+  } catch (error) {
+    console.log('실패 케이스 확인 (상태 코드):', error.status);
+  }
 }
 
 await testArticle();
