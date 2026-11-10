@@ -1,7 +1,5 @@
-// Product API 관련 함수 (async / await, try / catch 사용)
 const BASE_URL = "https://panda-market-api-crud.vercel.app";
 
-// 응답 상태 코드가 2XX가 아니면 에러를 던지고, 맞으면 JSON으로 바꿔요.
 async function handleResponse(response) {
   if (!response.ok) {
     throw new Error(`요청 실패 (상태 코드: ${response.status})`);
@@ -46,7 +44,7 @@ export async function createProduct(name, description, price, tags, images) {
   }
 }
 
-// 상품 수정 (바꾸고 싶은 값만 객체로 전달)
+// 상품 수정
 export async function patchProduct(productId, updateData) {
   try {
     const response = await fetch(`${BASE_URL}/products/${productId}`, {
